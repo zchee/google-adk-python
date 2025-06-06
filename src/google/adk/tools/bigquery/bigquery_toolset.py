@@ -28,6 +28,7 @@ from ...tools.base_toolset import BaseToolset
 from ...tools.base_toolset import ToolPredicate
 from .bigquery_credentials import BigQueryCredentialsConfig
 from .bigquery_tool import BigQueryTool
+from .config import BigQueryToolConfig
 
 
 class BigQueryToolset(BaseToolset):
@@ -38,9 +39,11 @@ class BigQueryToolset(BaseToolset):
       *,
       tool_filter: Optional[Union[ToolPredicate, List[str]]] = None,
       credentials_config: Optional[BigQueryCredentialsConfig] = None,
+      tool_config: Optional[BigQueryToolConfig] = None,
   ):
-    self._credentials_config = credentials_config
     self.tool_filter = tool_filter
+    self._credentials_config = credentials_config
+    self._tool_config = tool_config
 
   def _is_tool_selected(
       self, tool: BaseTool, readonly_context: ReadonlyContext
@@ -64,7 +67,8 @@ class BigQueryToolset(BaseToolset):
     all_tools = [
         BigQueryTool(
             func=func,
-            credentials=self._credentials_config,
+            credentials_config=self._credentials_config,
+            bigquery_tool_config=self._tool_config,
         )
         for func in [
             metadata_tool.get_dataset_info,
