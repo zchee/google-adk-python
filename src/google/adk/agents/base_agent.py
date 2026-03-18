@@ -270,7 +270,6 @@ class BaseAgent(BaseModel):
     cloned_agent.parent_agent = None
     return cloned_agent
 
-  @final
   async def run_async(
       self,
       parent_context: InvocationContext,
@@ -550,6 +549,7 @@ class BaseAgent(BaseModel):
 
   @override
   def model_post_init(self, __context: Any) -> None:
+    super().model_post_init(__context)
     self.__set_parent_agent_for_sub_agents()
 
   @field_validator('name', mode='after')
